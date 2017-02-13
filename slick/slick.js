@@ -1842,14 +1842,11 @@
                 .addClass('slick-slide');
 
         _.slideCount = _.$slides.length;
-        console.log('reInit method current slide '+_.currentSlide);
         if (_.currentSlide >= _.slideCount && _.currentSlide !== 0) {
-            console.log('first switch current slide');
             _.currentSlide = _.currentSlide - _.options.slidesToScroll;
         }
 
         if (_.slideCount <= _.options.slidesToShow) {
-            console.log('second switch current slide');
             _.currentSlide = 0;
         }
 
