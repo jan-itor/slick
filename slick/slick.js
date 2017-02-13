@@ -197,7 +197,7 @@
 
     };
 
-    Slick.prototype.addSlide = Slick.prototype.slickAdd = function (markup, index, addBefore) {
+    Slick.prototype.addSlide = Slick.prototype.slickAdd = function (markup, index, addBefore, currentIndex) {
 
         var _ = this;
 
@@ -237,6 +237,10 @@
         });
 
         _.$slidesCache = _.$slides;
+
+        if (typeof(currentIndex) === 'number' && currentIndex >=0) {
+            _.currentSlide = currentIndex;
+        }
 
         _.reinit();
 
@@ -1838,12 +1842,14 @@
                 .addClass('slick-slide');
 
         _.slideCount = _.$slides.length;
-
+        console.log('reInit method current slide '+_.currentSlide);
         if (_.currentSlide >= _.slideCount && _.currentSlide !== 0) {
+            console.log('first switch current slide');
             _.currentSlide = _.currentSlide - _.options.slidesToScroll;
         }
 
         if (_.slideCount <= _.options.slidesToShow) {
+            console.log('second switch current slide');
             _.currentSlide = 0;
         }
 
@@ -1894,7 +1900,7 @@
         }
     };
 
-    Slick.prototype.removeSlide = Slick.prototype.slickRemove = function (index, removeBefore, removeAll) {
+    Slick.prototype.removeSlide = Slick.prototype.slickRemove = function (index, removeBefore, removeAll, endIndex) {
 
         var _ = this;
 
@@ -1914,7 +1920,21 @@
         if (removeAll === true) {
             _.$slideTrack.children().remove();
         } else {
-            _.$slideTrack.children(this.options.slide).eq(index).remove();
+            if (typeof endIndex === 'number' && endIndex > index) {
+                if (index === 0) {
+                    for (var i = index; i < endIndex; i++) {
+                        _.$slideTrack.children(this.options.slide).eq(0).remove();
+                    }
+                } else {
+                    while (endIndex !== index) {
+                        _.$slideTrack.children(this.options.slide).eq(endIndex).remove();
+                        endIndex--;
+                    }
+                }
+                (_.currentSlide > endIndex) ? _.currentSlide -= endIndex : _.currentSlide;
+            } else {
+                _.$slideTrack.children(this.options.slide).eq(index).remove();
+            }
         }
 
         _.$slides = _.$slideTrack.children(this.options.slide);
@@ -2936,3 +2956,4 @@
     };
 
 }));
+
