@@ -41,6 +41,7 @@
                 accessibility: true,
                 adaptiveHeight: false,
                 customMobileMode: false,
+                customResetTouch: false,
                 appendArrows: $(element),
                 appendDots: $(element),
                 arrows: true,
@@ -676,6 +677,9 @@
 
             // only trigger breakpoints during an actual break. not on initialize.
             if (!initial && triggerBreakpoint !== false) {
+                if (_.options.customResetTouch) {
+                    _.touchObject = {};
+                }
                 _.$slider.trigger('breakpoint', [_, triggerBreakpoint]);
             }
         }
@@ -1876,6 +1880,10 @@
 
         _.paused = !_.options.autoplay;
         _.autoPlay();
+
+        if (_.options.customResetTouch) {
+            _.touchObject = {};
+        }
 
         _.$slider.trigger('reInit', [_]);
 
